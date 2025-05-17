@@ -9,6 +9,9 @@ branding:
 
 # Define your inputs here.
 inputs:
+  files:
+    description: Glob of files to be PUT to the space
+    required: false
   milliseconds:
     description: Your input description here
     required: true
@@ -18,6 +21,8 @@ inputs:
 outputs:
   time:
     description: Your output description here
+  resource:
+    description: URL to a resource that was PUT
 
 runs:
   using: node20
