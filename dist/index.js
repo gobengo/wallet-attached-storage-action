@@ -42241,18 +42241,6 @@ async function run() {
     const space1 = storage.space({
       signer: keyToSpace
     });
-    const space1Index = space1.resource('');
-    const responseToPutIndex = await space1Index.put(
-      new Blob([JSON.stringify({ hello: 'world' })], {
-        type: 'application/json'
-      })
-    );
-    console.debug('responseToPutIndex', {
-      status: responseToPutIndex.status,
-      headers: responseToPutIndex.headers
-    });
-    require$$0$4.equal(responseToPutIndex.ok, true, 'response to PUT / MUST be ok');
-    console.debug('index', new URL(space1Index.path, storageUrl).toString());
 
     const filesStripPrefix = coreExports.getInput('filesStripPrefix') ?? '';
     const globPattern = coreExports.getInput('files'); // Get glob pattern from input
@@ -42283,6 +42271,7 @@ async function run() {
         new URL(resourceWithName.path, storageUrl).toString()
       );
 
+      // @todo: make this configurable
       if (name.endsWith('/index.html')) {
         // also PUT to the container/
         const nameOfContainer = name.replace(/index\.html$/, '');

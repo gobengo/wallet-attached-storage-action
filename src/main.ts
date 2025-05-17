@@ -30,18 +30,6 @@ export async function run() {
     const space1 = storage.space({
       signer: keyToSpace
     })
-    const space1Index = space1.resource('')
-    const responseToPutIndex = await space1Index.put(
-      new Blob([JSON.stringify({ hello: 'world' })], {
-        type: 'application/json'
-      })
-    )
-    console.debug('responseToPutIndex', {
-      status: responseToPutIndex.status,
-      headers: responseToPutIndex.headers
-    })
-    assert.equal(responseToPutIndex.ok, true, 'response to PUT / MUST be ok')
-    console.debug('index', new URL(space1Index.path, storageUrl).toString())
 
     const filesStripPrefix = core.getInput('filesStripPrefix') ?? ''
     const globPattern = core.getInput('files') // Get glob pattern from input
