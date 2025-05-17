@@ -61,7 +61,7 @@ export async function run() {
       )
 
       // @todo: make this configurable
-      if (name.endsWith('/index.html')) {
+      if (name === 'index.html' || name.endsWith('/index.html')) {
         // also PUT to the container/
         const nameOfContainer = name.replace(/index\.html$/, '')
         console.debug('nameOfContainer', nameOfContainer)
