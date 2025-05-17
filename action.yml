@@ -13,7 +13,9 @@ inputs:
     description: Glob of files to be PUT to the space
     required: false
   filesStripPrefix:
-    description: strip this prefix from the beginning of the matched file path relative to repo root
+    description:
+      strip this prefix from the beginning of the matched file path relative to
+      repo root
     required: false
   milliseconds:
     description: Your input description here
