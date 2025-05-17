@@ -48,16 +48,14 @@ export async function run() {
     const globber = await glob.create(globPattern)
     const files = await globber.glob()
 
-    const baseGlob = await (await glob.create('')).glob()
-    console.debug('baseGlob', baseGlob)
-
     console.debug('iterating files', { globPattern })
+
     let lastName
     for (const file of files) {
       const isDirectory = lstatSync(file).isDirectory()
       if (isDirectory) continue
-      console.debug('file', file)
       const relativeToCwd = path.relative(process.cwd(), file)
+      console.debug('file', relativeToCwd)
       const relativeToCwdWithoutPrefix = relativeToCwd.replace(
         filesStripPrefix,
         ''
@@ -68,10 +66,13 @@ export async function run() {
       core.info(`PUT ${resourceWithName.path}`)
       const fileContents = await blob(createReadStream(file))
       const responseToPut = await resourceWithName.put(fileContents)
-      console.debug('response to put', responseToPut.status, {
-        url: new URL(resourceWithName.path, storageUrl).toString()
-      })
+      console.debug(
+        `Response to PUT ${resourceWithName.path}: `,
+        responseToPut.status,
+        new URL(resourceWithName.path, storageUrl).toString()
+      )
     }
+
     console.debug('iterated files')
 
     // Set outputs for other workflow steps to use
