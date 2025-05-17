@@ -43,7 +43,7 @@ export async function run() {
     assert.equal(responseToPutIndex.ok, true, 'response to PUT / MUST be ok')
     console.debug('index', new URL(space1Index.path, storageUrl).toString())
 
-    const filesStripPrefix = core.getInput('filesStripPrefix')
+    const filesStripPrefix = core.getInput('filesStripPrefix') ?? ''
     const globPattern = core.getInput('files') // Get glob pattern from input
     const globber = await glob.create(globPattern)
     const files = await globber.glob()
