@@ -42260,6 +42260,7 @@ async function run() {
     console.debug('iterating files', { globPattern });
     let lastName;
     for (const file of files) {
+      console.debug('file', file);
       const isDirectory = lstatSync(file).isDirectory();
       if (isDirectory) continue
       const name = file.split('/').pop() || '';
