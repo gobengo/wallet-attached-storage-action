@@ -71,6 +71,21 @@ export async function run() {
         responseToPut.status,
         new URL(resourceWithName.path, storageUrl).toString()
       )
+
+      // @todo: make this configurable
+      if (name.endsWith('/index.html')) {
+        // also PUT to the container/
+        const nameOfContainer = name.replace(/index\.html$/, '')
+        console.debug('nameOfContainer', nameOfContainer)
+        const resourceForContainer = space1.resource(nameOfContainer)
+        const responseToPutContainer =
+          await resourceForContainer.put(fileContents)
+        console.debug(
+          `Response to PUT ${resourceForContainer.path}: `,
+          responseToPutContainer.status,
+          new URL(resourceForContainer.path, storageUrl).toString()
+        )
+      }
     }
 
     console.debug('iterated files')
