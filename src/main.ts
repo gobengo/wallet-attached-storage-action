@@ -47,8 +47,10 @@ export async function run() {
     const files = await globber.glob()
 
     console.debug('iterating files', { globPattern })
+    let lastName
     for (const file of files) {
       const name = file.split('/').pop() || ''
+      lastName = name
       const resourceWithName = space1.resource(name)
       core.info(`PUT ${resourceWithName.path}`)
       const fileContents = await blob(createReadStream(file))
@@ -61,6 +63,13 @@ export async function run() {
 
     // Set outputs for other workflow steps to use
     core.setOutput('time', new Date().toTimeString())
+    core.setOutput(
+      'resource',
+      new URL(
+        `/space/${space1.uuid}/resource/${lastName}`,
+        storageUrl
+      ).toString()
+    )
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
