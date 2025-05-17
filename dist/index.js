@@ -1,7 +1,7 @@
 import require$$0$1 from 'os';
 import * as require$$0 from 'crypto';
 import require$$0__default from 'crypto';
-import require$$1, { createReadStream } from 'fs';
+import require$$1, { lstatSync, createReadStream } from 'fs';
 import require$$0$a from 'path';
 import require$$2 from 'http';
 import require$$3 from 'https';
@@ -42258,8 +42258,13 @@ async function run() {
     const files = await globber.glob();
 
     console.debug('iterating files', { globPattern });
+    let lastName;
     for (const file of files) {
+      const isDirectory = lstatSync(file).isDirectory();
+      console.debug('isDirectory', isDirectory, { file });
+      if (isDirectory) continue
       const name = file.split('/').pop() || '';
+      lastName = name;
       const resourceWithName = space1.resource(name);
       coreExports.info(`PUT ${resourceWithName.path}`);
       const fileContents = await blob(createReadStream(file));
@@ -42272,6 +42277,13 @@ async function run() {
 
     // Set outputs for other workflow steps to use
     coreExports.setOutput('time', new Date().toTimeString());
+    coreExports.setOutput(
+      'resource',
+      new URL(
+        `/space/${space1.uuid}/resource/${lastName}`,
+        storageUrl
+      ).toString()
+    );
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) coreExports.setFailed(error.message);
