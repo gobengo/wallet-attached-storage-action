@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as core from '@actions/core'
+import * as glob from '@actions/glob'
 import { StorageClient } from '@wallet.storage/fetch-client'
 import { Ed25519Signer } from '@did.coop/did-key-ed25519'
 import assert from 'assert'
+import { readFile } from 'fs/promises'
+import { createReadStream } from 'fs'
+import { blob } from 'stream/consumers'
 
 /**
  * The main function for the action.
@@ -37,6 +41,23 @@ export async function run() {
     })
     assert.equal(responseToPutIndex.ok, true, 'response to PUT / MUST be ok')
     console.debug('index', new URL(space1Index.path, storageUrl).toString())
+
+    const globPattern = core.getInput('files') // Get glob pattern from input
+    const globber = await glob.create(globPattern)
+    const files = await globber.glob()
+
+    console.debug('iterating files', { globPattern })
+    for (const file of files) {
+      const name = file.split('/').pop() || ''
+      const resourceWithName = space1.resource(name)
+      core.info(`PUT ${resourceWithName.path}`)
+      const fileContents = await blob(createReadStream(file))
+      const responseToPut = await resourceWithName.put(fileContents)
+      console.debug('response to put', responseToPut.status, {
+        url: new URL(resourceWithName.path, storageUrl).toString()
+      })
+    }
+    console.debug('iterated files')
 
     // Set outputs for other workflow steps to use
     core.setOutput('time', new Date().toTimeString())
