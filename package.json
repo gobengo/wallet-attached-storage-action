@@ -37,7 +37,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.11.1"
+    "@actions/core": "^1.11.1",
+    "@did.coop/did-key-ed25519": "github:did-coop/did-key-ed25519",
+    "@wallet.storage/fetch-client": "^1.1.2"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.9",
