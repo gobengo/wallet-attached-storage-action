@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as core from '@actions/core'
 import { StorageClient } from '@wallet.storage/fetch-client'
 import { Ed25519Signer } from '@did.coop/did-key-ed25519'
@@ -8,10 +9,10 @@ import assert from 'assert'
  *
  * @returns Resolves when the action is complete.
  */
-export async function run(): Promise<void> {
+export async function run() {
   try {
-    const ms: string = core.getInput('milliseconds')
-    const urlInput: string = core.getInput('url')
+    const ms = core.getInput('milliseconds')
+    const urlInput = core.getInput('url')
     const storageUrl = new URL(
       urlInput || 'https://wallet-attached-storage.bengo.is'
     )
@@ -38,7 +39,7 @@ export async function run(): Promise<void> {
     console.debug('index', new URL(space1Index.path, storageUrl).toString())
 
     // Set outputs for other workflow steps to use
-    // core.setOutput('time', new Date().toTimeString())
+    core.setOutput('time', new Date().toTimeString())
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
