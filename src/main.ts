@@ -5,7 +5,7 @@ import { StorageClient } from '@wallet.storage/fetch-client'
 import { Ed25519Signer } from '@did.coop/did-key-ed25519'
 import assert from 'assert'
 import { readFile } from 'fs/promises'
-import { createReadStream } from 'fs'
+import { createReadStream, lstatSync } from 'fs'
 import { blob } from 'stream/consumers'
 
 /**
@@ -49,6 +49,8 @@ export async function run() {
     console.debug('iterating files', { globPattern })
     let lastName
     for (const file of files) {
+      const isDirectory = lstatSync(file).isDirectory()
+      if (isDirectory) continue
       const name = file.split('/').pop() || ''
       lastName = name
       const resourceWithName = space1.resource(name)
