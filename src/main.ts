@@ -50,7 +50,6 @@ export async function run() {
     let lastName
     for (const file of files) {
       const isDirectory = lstatSync(file).isDirectory()
-      console.debug('isDirectory', isDirectory, { file })
       if (isDirectory) continue
       const name = file.split('/').pop() || ''
       lastName = name
