@@ -7,6 +7,7 @@ import assert from 'assert'
 import { readFile } from 'fs/promises'
 import { createReadStream, lstatSync } from 'fs'
 import { blob } from 'stream/consumers'
+import * as path from 'path'
 
 /**
  * The main function for the action.
@@ -42,17 +43,26 @@ export async function run() {
     assert.equal(responseToPutIndex.ok, true, 'response to PUT / MUST be ok')
     console.debug('index', new URL(space1Index.path, storageUrl).toString())
 
+    const filesStripPrefix = core.getInput('filesStripPrefix')
     const globPattern = core.getInput('files') // Get glob pattern from input
     const globber = await glob.create(globPattern)
     const files = await globber.glob()
 
+    const baseGlob = await (await glob.create('')).glob()
+    console.debug('baseGlob', baseGlob)
+
     console.debug('iterating files', { globPattern })
     let lastName
     for (const file of files) {
-      console.debug('file', file)
       const isDirectory = lstatSync(file).isDirectory()
       if (isDirectory) continue
-      const name = file.split('/').pop() || ''
+      console.debug('file', file)
+      const relativeToCwd = path.relative(process.cwd(), file)
+      const relativeToCwdWithoutPrefix = relativeToCwd.replace(
+        filesStripPrefix,
+        ''
+      )
+      const name = relativeToCwdWithoutPrefix
       lastName = name
       const resourceWithName = space1.resource(name)
       core.info(`PUT ${resourceWithName.path}`)
