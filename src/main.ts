@@ -31,10 +31,10 @@ export async function run() {
       }
     }
 
-    const urlInput = core.getInput('url')
-    console.debug('urlInput', urlInput)
+    const spaceInput = core.getInput('space')
+    console.debug('spaceInput', spaceInput)
     const storageUrl = new URL(
-      urlInput || 'https://wallet-attached-storage.bengo.is'
+      spaceInput || 'https://wallet-attached-storage.bengo.is'
     )
     console.debug('storageUrl', storageUrl.toString())
 
@@ -43,7 +43,8 @@ export async function run() {
     const match = storageUrl.toString().match(patternOfSpaceUrl)
     if (!match) throw new Error('failed to parse url')
     const {
-      spaceUuid = crypto.randomUUID(),
+      spaceUuid = (console.debug('generating random space uuid'),
+      crypto.randomUUID()),
       path: pathOfResource,
       name
     } = match.groups ?? {}
