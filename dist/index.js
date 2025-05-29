@@ -57694,6 +57694,7 @@ const SshpkSigner = SshpkSigner$1;
 async function run() {
   try {
     const idInput = coreExports.getInput('id');
+    console.debug('was action: id input', { length: idInput?.length });
 
     let signer;
     if (idInput) {
