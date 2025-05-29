@@ -8,6 +8,8 @@ import { readFile } from 'fs/promises'
 import { createReadStream, lstatSync } from 'fs'
 import { blob } from 'stream/consumers'
 import * as path from 'path'
+import sshpk from 'sshpk'
+import { SshpkSigner } from '@data.pub/did-sshpk'
 
 /**
  * The main function for the action.
@@ -16,9 +18,18 @@ import * as path from 'path'
  */
 export async function run() {
   try {
-    const ms = core.getInput('milliseconds')
     const idInput = core.getInput('id')
-    console.debug('id input', typeof idInput, { length: idInput?.length })
+
+    let signer
+    if (idInput) {
+      try {
+        const keyFromId = sshpk.parsePrivateKey(idInput)
+        signer = await SshpkSigner.fromPrivateKey(keyFromId)
+      } catch (error) {
+        throw new Error(`Failed to parse id input as ssh key`, { cause: error })
+      }
+    }
+
     const urlInput = core.getInput('url')
     const storageUrl = new URL(
       urlInput || 'https://wallet-attached-storage.bengo.is'
@@ -33,17 +44,15 @@ export async function run() {
       path: pathOfResource,
       name
     } = match.groups ?? {}
-    console.debug('url matched pattern', match, {
-      spaceUuid,
-      pathOfResource,
-      name
-    })
 
-    const keyToSpace = await Ed25519Signer.generate()
-    console.debug('keyToSpace', keyToSpace.controller)
+    const keyToSpace =
+      signer ??
+      (console.debug('generating new ed25519 to be space controller'),
+      await Ed25519Signer.generate())
+    console.debug('using key to space', keyToSpace.id)
 
     const storageUrlOriginUrl = new URL(storageUrl.origin)
-    console.debug('storageUrlOriginUrl', storageUrlOriginUrl.toString())
+    console.debug('storage url', storageUrlOriginUrl.toString())
     const storage = new StorageClient(storageUrlOriginUrl)
 
     const space1 = storage.space({
