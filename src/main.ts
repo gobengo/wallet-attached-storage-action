@@ -19,6 +19,7 @@ import { SshpkSigner } from '@data.pub/did-sshpk'
 export async function run() {
   try {
     const idInput = core.getInput('id')
+    console.debug('was action: id input', { length: idInput?.length })
 
     let signer
     if (idInput) {
