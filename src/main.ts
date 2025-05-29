@@ -134,10 +134,7 @@ export async function run() {
     core.setOutput('time', new Date().toTimeString())
     core.setOutput(
       'resource',
-      new URL(
-        `/space/${space1.uuid}/resource/${lastName}`,
-        storageUrl
-      ).toString()
+      new URL(`/space/${space1.uuid}/${lastName}`, storageUrl).toString()
     )
   } catch (error) {
     // Fail the workflow run if an error occurs
