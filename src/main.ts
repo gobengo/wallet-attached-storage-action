@@ -91,7 +91,8 @@ export async function run() {
       console.debug(
         `Response to PUT ${resourceWithName.path}: `,
         responseToPut.status,
-        new URL(resourceWithName.path, storageUrl).toString()
+        new URL(resourceWithName.path, storageUrl).toString(),
+        await responseToPut.blob().then((b) => b.text())
       )
 
       // @todo: make this configurable
@@ -105,7 +106,8 @@ export async function run() {
         console.debug(
           `Response to PUT ${resourceForContainer.path}: `,
           responseToPutContainer.status,
-          new URL(resourceForContainer.path, storageUrl).toString()
+          new URL(resourceForContainer.path, storageUrl).toString(),
+          await responseToPutContainer.blob().then((b) => b.text())
         )
       }
     }
