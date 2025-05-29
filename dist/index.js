@@ -42228,17 +42228,37 @@ class Ed25519Signer {
 async function run() {
   try {
     const ms = coreExports.getInput('milliseconds');
+    const idInput = coreExports.getInput('id');
+    console.debug('id input', typeof idInput, { length: idInput?.length });
     const urlInput = coreExports.getInput('url');
     const storageUrl = new URL(
       urlInput || 'https://wallet-attached-storage.bengo.is'
     );
 
+    const patternOfSpaceUrl =
+      /\/space\/(?<spaceUuid>[^/]+)(?<path>\/(?<name>.*)?)?/;
+    const match = storageUrl.toString().match(patternOfSpaceUrl);
+    if (!match) throw new Error('failed to parse url')
+    const {
+      spaceUuid = crypto.randomUUID(),
+      path: pathOfResource,
+      name
+    } = match.groups ?? {};
+    console.debug('url matched pattern', match, {
+      spaceUuid,
+      pathOfResource,
+      name
+    });
+
     const keyToSpace = await Ed25519Signer.generate();
     console.debug('keyToSpace', keyToSpace.controller);
 
-    const storage = new StorageClient(storageUrl);
+    const storageUrlOriginUrl = new URL(storageUrl.origin);
+    console.debug('storageUrlOriginUrl', storageUrlOriginUrl.toString());
+    const storage = new StorageClient(storageUrlOriginUrl);
 
     const space1 = storage.space({
+      id: `urn:uuid:${spaceUuid}`,
       signer: keyToSpace
     });
 
