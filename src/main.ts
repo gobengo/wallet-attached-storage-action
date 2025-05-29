@@ -70,6 +70,22 @@ export async function run() {
     const globber = await glob.create(globPattern)
     const files = await globber.glob()
 
+    // console.debug('testing ability to GET space')
+    // {
+    //   const signer = keyToSpace
+    //   const responseToGetSpace = await space1.get({ signer })
+    //   console.debug('responseToGetSpace', responseToGetSpace, {
+    //     signer: signer.id
+    //   })
+    //   const testResource = space1.resource(crypto.randomUUID())
+    //   console.debug('testResource', testResource.path)
+    //   console.debug(`PUT ${testResource.path}`, signer.id)
+    //   const responseToPut = await testResource.put(new Blob(['test content']), {
+    //     signer
+    //   })
+    //   console.debug('responseToPut', responseToPut)
+    // }
+
     console.debug('iterating files', { globPattern })
 
     let lastName

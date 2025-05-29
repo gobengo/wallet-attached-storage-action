@@ -34766,6 +34766,12 @@ async function createHttpSignatureAuthorization(options) {
 }
 
 /** @file client that makes requests using fetch + storage HTTP API */
+const defaultIncludeHeaders = [
+    '(created)',
+    '(expires)',
+    '(key-id)',
+    '(request-target)',
+];
 class ResourceFetched {
     type = 'Resource';
     #fetch;
@@ -34786,8 +34792,9 @@ class ResourceFetched {
                 signer,
                 method,
                 headers,
-                includeHeaders: [],
+                includeHeaders: defaultIncludeHeaders,
                 created: new Date(),
+                expires: new Date(Date.now() + 30 * 1000),
                 url: new URL(location, 
                 // the host will not be used in the authorization
                 // unless the options want it to be.
@@ -34820,8 +34827,9 @@ class ResourceFetched {
                 signer,
                 method,
                 headers,
-                includeHeaders: [],
+                includeHeaders: defaultIncludeHeaders,
                 created: new Date(),
+                expires: new Date(Date.now() + 30 * 1000),
                 url: new URL(location, 
                 // the host will not be used in the authorization
                 // unless the options want it to be.
@@ -34854,8 +34862,9 @@ class ResourceFetched {
                 signer,
                 method,
                 headers,
-                includeHeaders: [],
+                includeHeaders: defaultIncludeHeaders,
                 created: new Date(),
+                expires: new Date(Date.now() + 30 * 1000),
                 url: new URL(location, 
                 // the host will not be used in the authorization
                 // unless the options want it to be.
@@ -34888,8 +34897,9 @@ class ResourceFetched {
                 signer,
                 method,
                 headers,
-                includeHeaders: [],
+                includeHeaders: defaultIncludeHeaders,
                 created: new Date(),
+                expires: new Date(Date.now() + 30 * 1000),
                 url: new URL(location, 
                 // the host will not be used in the authorization
                 // unless the options want it to be.
@@ -34939,7 +34949,7 @@ class SpaceFetched {
     //         signer,
     //         method,
     //         headers,
-    //         includeHeaders: [],
+    //         includeHeaders: defaultIncludeHeaders,
     //         created: new Date,
     //         url: new URL(
     //           location,
@@ -34977,7 +34987,7 @@ class SpaceFetched {
     resource(resourcePathParam, options = {}) {
         let resourcePath;
         if (typeof resourcePathParam === 'undefined') {
-            resourcePath = `/${crypto.randomUUID()}`;
+            resourcePath = `/${options.uuid || crypto.randomUUID}`;
         }
         else if (typeof resourcePathParam === 'string') {
             if (resourcePathParam.startsWith('/')) {
@@ -34991,7 +35001,7 @@ class SpaceFetched {
             throw new Error('unexpected resource path parameter', { cause: { resourcePathParam } });
         }
         const signer = options.signer ?? this.#signer;
-        const path = `${this.path}/resource${resourcePath}`;
+        const path = `${this.path}${resourcePath}`;
         return new ResourceFetched({
             fetch: this.#fetch,
             path,
@@ -35020,8 +35030,9 @@ class SpaceFetched {
                 signer,
                 method,
                 headers,
-                includeHeaders: [],
+                includeHeaders: defaultIncludeHeaders,
                 created: new Date(),
+                expires: new Date(Date.now() + 30 * 1000),
                 url: new URL(location, 
                 // the host will not be used in the authorization
                 // unless the options want it to be.
@@ -35060,8 +35071,9 @@ class SpaceFetched {
                 signer,
                 method,
                 headers,
-                includeHeaders: [],
+                includeHeaders: defaultIncludeHeaders,
                 created: new Date(),
+                expires: new Date(Date.now() + 30 * 1000),
                 url: new URL(location, 
                 // the host will not be used in the authorization
                 // unless the options want it to be.
@@ -35088,8 +35100,9 @@ class SpaceFetched {
                 signer,
                 method,
                 headers,
-                includeHeaders: [],
+                includeHeaders: defaultIncludeHeaders,
                 created: new Date(),
+                expires: new Date(Date.now() + 30 * 1000),
                 url: new URL(location, 
                 // the host will not be used in the authorization
                 // unless the options want it to be.
@@ -35118,8 +35131,9 @@ class SpaceFetched {
                 signer,
                 method,
                 headers,
-                includeHeaders: [],
+                includeHeaders: defaultIncludeHeaders,
                 created: new Date(),
+                expires: new Date(Date.now() + 30 * 1000),
                 url: new URL(location, 
                 // the host will not be used in the authorization
                 // unless the options want it to be.
@@ -57744,6 +57758,22 @@ async function run() {
     const globPattern = coreExports.getInput('files'); // Get glob pattern from input
     const globber = await globExports.create(globPattern);
     const files = await globber.glob();
+
+    // console.debug('testing ability to GET space')
+    // {
+    //   const signer = keyToSpace
+    //   const responseToGetSpace = await space1.get({ signer })
+    //   console.debug('responseToGetSpace', responseToGetSpace, {
+    //     signer: signer.id
+    //   })
+    //   const testResource = space1.resource(crypto.randomUUID())
+    //   console.debug('testResource', testResource.path)
+    //   console.debug(`PUT ${testResource.path}`, signer.id)
+    //   const responseToPut = await testResource.put(new Blob(['test content']), {
+    //     signer
+    //   })
+    //   console.debug('responseToPut', responseToPut)
+    // }
 
     console.debug('iterating files', { globPattern });
 
