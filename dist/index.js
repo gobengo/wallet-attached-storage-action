@@ -57707,9 +57707,11 @@ async function run() {
     }
 
     const urlInput = coreExports.getInput('url');
+    console.debug('urlInput', urlInput);
     const storageUrl = new URL(
       urlInput || 'https://wallet-attached-storage.bengo.is'
     );
+    console.debug('storageUrl', storageUrl.toString());
 
     const patternOfSpaceUrl =
       /\/space\/(?<spaceUuid>[^/]+)(?<path>\/(?<name>.*)?)?/;
@@ -57727,6 +57729,7 @@ async function run() {
       await Ed25519Signer.generate());
     console.debug('using key to space', keyToSpace.id);
 
+    console.debug('storageUrl.origin', storageUrl.origin);
     const storageUrlOriginUrl = new URL(storageUrl.origin);
     console.debug('storage url', storageUrlOriginUrl.toString());
     const storage = new StorageClient(storageUrlOriginUrl);
