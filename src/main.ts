@@ -45,7 +45,7 @@ export async function run() {
     if (!match) throw new Error('failed to parse url')
     const {
       spaceUuid = (console.debug('generating random space uuid'),
-        crypto.randomUUID()),
+      crypto.randomUUID()),
       path: pathOfResource,
       name
     } = match.groups ?? {}
@@ -53,7 +53,7 @@ export async function run() {
     const keyToSpace =
       signer ??
       (console.debug('generating new ed25519 to be space controller'),
-        await Ed25519Signer.generate())
+      await Ed25519Signer.generate())
     console.debug('using key to space', keyToSpace.id)
 
     console.debug('storageUrl.origin', storageUrl.origin)

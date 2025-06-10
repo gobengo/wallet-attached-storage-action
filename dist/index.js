@@ -69753,18 +69753,21 @@ async function run() {
       lastName = name;
       const resourceWithName = space1.resource(name);
       coreExports.info(`PUT ${resourceWithName.path}`);
+      console.debug('mime lookup', mime.lookup(require$$1.basename(file)));
       const fileContentType = mime.contentType(require$$1.basename(file)) || undefined;
-      console.debug('fileContentType', fileContentType);
       const fileContents = new Blob([await blob(createReadStream(file))], {
         type: fileContentType
       });
       const responseToPut = await resourceWithName.put(fileContents);
-      console.debug(
-        `Response to PUT ${resourceWithName.path}: `,
-        responseToPut.status,
-        new URL(resourceWithName.path, storageUrl).toString(),
-        await responseToPut.blob().then((b) => b.text())
-      );
+
+      if (!responseToPut.ok) {
+        console.debug(
+          `Response to PUT ${resourceWithName.path}: `,
+          responseToPut.status,
+          new URL(resourceWithName.path, storageUrl).toString(),
+          await responseToPut.blob().then((b) => b.text())
+        );
+      }
 
       // @todo: make this configurable
       if (name === 'index.html' || name.endsWith('/index.html')) {
