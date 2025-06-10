@@ -103,7 +103,7 @@ export async function run() {
       lastName = name
       const resourceWithName = space1.resource(name)
       core.info(`PUT ${resourceWithName.path}`)
-      const fileContentType = mime.contentType(file) || undefined
+      const fileContentType = mime.contentType(path.basename(file)) || undefined
       console.debug('fileContentType', fileContentType)
       const fileContents = new Blob([await blob(createReadStream(file))], {
         type: fileContentType
