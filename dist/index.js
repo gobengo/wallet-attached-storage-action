@@ -69774,12 +69774,10 @@ async function run() {
       }
     }
 
+    const spaceUrl = new URL(space1.path, storageUrl);
+
     // Set outputs for other workflow steps to use
-    coreExports.setOutput('time', new Date().toTimeString());
-    coreExports.setOutput(
-      'resource',
-      new URL(`/space/${space1.uuid}/${lastName}`, storageUrl).toString()
-    );
+    coreExports.setOutput('space', spaceUrl.toString());
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) coreExports.setFailed(error.message);

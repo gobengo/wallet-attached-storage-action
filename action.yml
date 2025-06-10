@@ -34,10 +34,8 @@ inputs:
 
 # Define your outputs here.
 outputs:
-  time:
-    description: Your output description here
-  resource:
-    description: URL to a resource that was PUT
+  space:
+    description: URL to the space that was PUT to
 
 runs:
   using: node20
