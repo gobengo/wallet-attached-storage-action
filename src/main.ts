@@ -45,7 +45,7 @@ export async function run() {
     if (!match) throw new Error('failed to parse url')
     const {
       spaceUuid = (console.debug('generating random space uuid'),
-      crypto.randomUUID()),
+        crypto.randomUUID()),
       path: pathOfResource,
       name
     } = match.groups ?? {}
@@ -53,7 +53,7 @@ export async function run() {
     const keyToSpace =
       signer ??
       (console.debug('generating new ed25519 to be space controller'),
-      await Ed25519Signer.generate())
+        await Ed25519Signer.generate())
     console.debug('using key to space', keyToSpace.id)
 
     console.debug('storageUrl.origin', storageUrl.origin)
@@ -103,18 +103,21 @@ export async function run() {
       lastName = name
       const resourceWithName = space1.resource(name)
       core.info(`PUT ${resourceWithName.path}`)
+      console.debug('mime lookup', mime.lookup(path.basename(file)))
       const fileContentType = mime.contentType(path.basename(file)) || undefined
-      console.debug('fileContentType', fileContentType)
       const fileContents = new Blob([await blob(createReadStream(file))], {
         type: fileContentType
       })
       const responseToPut = await resourceWithName.put(fileContents)
-      console.debug(
-        `Response to PUT ${resourceWithName.path}: `,
-        responseToPut.status,
-        new URL(resourceWithName.path, storageUrl).toString(),
-        await responseToPut.blob().then((b) => b.text())
-      )
+
+      if (!responseToPut.ok) {
+        console.debug(
+          `Response to PUT ${resourceWithName.path}: `,
+          responseToPut.status,
+          new URL(resourceWithName.path, storageUrl).toString(),
+          await responseToPut.blob().then((b) => b.text())
+        )
+      }
 
       // @todo: make this configurable
       if (name === 'index.html' || name.endsWith('/index.html')) {
