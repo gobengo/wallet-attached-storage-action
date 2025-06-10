@@ -103,10 +103,9 @@ export async function run() {
       lastName = name
       const resourceWithName = space1.resource(name)
       core.info(`PUT ${resourceWithName.path}`)
-      console.debug('mime lookup', mime.lookup(path.basename(file)))
-      const fileContentType = mime.contentType(path.basename(file)) || undefined
+      const fileMediaType = mime.lookup(path.basename(file)) || undefined
       const fileContents = new Blob([await blob(createReadStream(file))], {
-        type: fileContentType
+        type: fileMediaType
       })
       const responseToPut = await resourceWithName.put(fileContents)
 

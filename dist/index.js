@@ -69753,10 +69753,9 @@ async function run() {
       lastName = name;
       const resourceWithName = space1.resource(name);
       coreExports.info(`PUT ${resourceWithName.path}`);
-      console.debug('mime lookup', mime.lookup(require$$1.basename(file)));
-      const fileContentType = mime.contentType(require$$1.basename(file)) || undefined;
+      const fileMediaType = mime.lookup(require$$1.basename(file)) || undefined;
       const fileContents = new Blob([await blob(createReadStream(file))], {
-        type: fileContentType
+        type: fileMediaType
       });
       const responseToPut = await resourceWithName.put(fileContents);
 
