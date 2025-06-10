@@ -69737,8 +69737,6 @@ async function run() {
     //   console.debug('responseToPut', responseToPut)
     // }
 
-    console.debug('iterating files', { globPattern });
-
     let lastName;
     for (const file of files) {
       const isDirectory = lstatSync(file).isDirectory();
@@ -69757,35 +69755,24 @@ async function run() {
       const fileContents = new Blob([await blob(createReadStream(file))], {
         type: fileMediaType
       });
-      const responseToPut = await resourceWithName.put(fileContents);
 
-      if (!responseToPut.ok) {
-        console.debug(
-          `Response to PUT ${resourceWithName.path}: `,
-          responseToPut.status,
-          new URL(resourceWithName.path, storageUrl).toString(),
-          await responseToPut.blob().then((b) => b.text())
-        );
-      }
+      const urlToPutFile = new URL(resourceWithName.path, storageUrl);
+      console.debug(`>`, `PUT`, urlToPutFile.toString());
+      const responseToPut = await resourceWithName.put(fileContents);
+      console.debug(`<`, responseToPut.status);
 
       // @todo: make this configurable
       if (name === 'index.html' || name.endsWith('/index.html')) {
         // also PUT to the container/
         const nameOfContainer = name.replace(/index\.html$/, '');
         const resourceForContainer = space1.resource(nameOfContainer);
-        coreExports.info(`PUT ${resourceForContainer.path}`);
+        const urlToPutContainer = new URL(resourceWithName.path, storageUrl);
+        console.debug(`>`, `PUT`, urlToPutContainer.toString());
         const responseToPutContainer =
           await resourceForContainer.put(fileContents);
-        console.debug(
-          `Response to PUT ${resourceForContainer.path}: `,
-          responseToPutContainer.status,
-          new URL(resourceForContainer.path, storageUrl).toString(),
-          await responseToPutContainer.blob().then((b) => b.text())
-        );
+        console.debug(`<`, responseToPutContainer.status);
       }
     }
-
-    console.debug('iterated files');
 
     // Set outputs for other workflow steps to use
     coreExports.setOutput('time', new Date().toTimeString());
