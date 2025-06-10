@@ -69766,7 +69766,7 @@ async function run() {
         // also PUT to the container/
         const nameOfContainer = name.replace(/index\.html$/, '');
         const resourceForContainer = space1.resource(nameOfContainer);
-        const urlToPutContainer = new URL(resourceWithName.path, storageUrl);
+        const urlToPutContainer = new URL(resourceForContainer.path, storageUrl);
         console.debug(`>`, `PUT`, urlToPutContainer.toString());
         const responseToPutContainer =
           await resourceForContainer.put(fileContents);
