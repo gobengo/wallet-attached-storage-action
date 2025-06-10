@@ -41,7 +41,10 @@
     "@actions/glob": "^0.5.0",
     "@data.pub/did-sshpk": "^0.0.5",
     "@did.coop/did-key-ed25519": "github:did-coop/did-key-ed25519",
+    "@rollup/plugin-json": "^6.1.0",
+    "@types/mime-types": "^3.0.1",
     "@wallet.storage/fetch-client": "^1.2.0",
+    "mime-types": "^3.0.1",
     "sshpk": "^1.18.0"
   },
   "devDependencies": {

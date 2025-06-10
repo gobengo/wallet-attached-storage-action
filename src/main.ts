@@ -10,6 +10,7 @@ import { blob } from 'stream/consumers'
 import * as path from 'path'
 import sshpk from 'sshpk'
 import { SshpkSigner } from '@data.pub/did-sshpk'
+import mime from 'mime-types'
 
 /**
  * The main function for the action.
@@ -102,7 +103,11 @@ export async function run() {
       lastName = name
       const resourceWithName = space1.resource(name)
       core.info(`PUT ${resourceWithName.path}`)
-      const fileContents = await blob(createReadStream(file))
+      const fileContentType = mime.contentType(file) || undefined
+      console.debug('fileContentType', fileContentType)
+      const fileContents = new Blob([await blob(createReadStream(file))], {
+        type: fileContentType
+      })
       const responseToPut = await resourceWithName.put(fileContents)
       console.debug(
         `Response to PUT ${resourceWithName.path}: `,
